@@ -121,6 +121,26 @@
 			z-index: 101;
 		}
 		
+		&.inverse {
+			bottom: 28px; // height of hovered button (border-top, padding-top, padding-bottom, height/textheight) | adjust via JS (28px are Basic Style default)
+			
+			&:after {
+				border-top-color: @wcfDropdownBorderColor;
+				border-bottom-width: 0;
+				border-top-width: 7px;
+				bottom: -7px;
+				top: auto;
+			}
+			
+			&:before {
+				border-top-color: @wcfDropdownBackgroundColor;
+				border-bottom-width: 0;
+				border-top-width: 6px;
+				bottom: -6px;
+				top: auto;
+			}
+		}
+		
 		&.dropdownArrowRight {
 			&:after {
 				left: auto;
