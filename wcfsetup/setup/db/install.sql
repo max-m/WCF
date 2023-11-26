@@ -1465,6 +1465,40 @@ CREATE TABLE wcf1_unfurl_url_image (
 	UNIQUE KEY imageUrlHash (imageUrlHash)
 );
 
+DROP TABLE IF EXISTS wcf1_upload;
+CREATE TABLE wcf1_upload (
+	uploadID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	objectTypeID INT,
+	fileHash BINARY(32) NOT NULL,
+	fileHashWebp BINARY(32),
+	fileExtension VARCHAR(10) NOT NULL,
+	fileSize BIGINT NOT NULL,
+	originalFilename VARCHAR(255),
+	isPublic TINYINT NOT NULL,
+
+	KEY objectTypeID (objectTypeID)
+);
+
+DROP TABLE IF EXISTS wcf1_upload_cleanup;
+CREATE TABLE wcf1_upload_cleanup (
+	uploadID INT NOT NULL,
+
+	PRIMARY KEY (uploadID)
+);
+
+DROP TABLE IF EXISTS wcf1_upload_thumbnail;
+CREATE TABLE wcf1_upload_thumbnail (
+	thumbnailID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	uploadID INT NOT NULL,
+	thumbnailType VARCHAR(50) NOT NULL,
+	fileHash BINARY(32) NOT NULL,
+	fileHashWebp BINARY(32),
+	fileExtension VARCHAR(10) NOT NULL,
+	parameters TEXT,
+
+	UNIQUE KEY thumbnailType (uploadID, thumbnailType)
+);
+
 DROP TABLE IF EXISTS wcf1_user;
 CREATE TABLE wcf1_user (
 	userID INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -2173,6 +2207,12 @@ ALTER TABLE wcf1_tracked_visit_type ADD FOREIGN KEY (objectTypeID) REFERENCES wc
 ALTER TABLE wcf1_tracked_visit_type ADD FOREIGN KEY (userID) REFERENCES wcf1_user (userID) ON DELETE CASCADE;
 
 ALTER TABLE wcf1_unfurl_url ADD FOREIGN KEY (imageID) REFERENCES wcf1_unfurl_url_image (imageID) ON DELETE SET NULL;
+
+ALTER TABLE wcf1_upload ADD FOREIGN KEY (objectTypeID) REFERENCES wcf1_object_type (objectTypeID) ON DELETE SET NULL;
+
+ALTER TABLE wcf1_upload_cleanup ADD FOREIGN KEY (uploadID) REFERENCES wcf1_upload (uploadID) ON DELETE CASCADE;
+
+ALTER TABLE wcf1_upload_thumbnail ADD FOREIGN KEY (uploadID) REFERENCES wcf1_upload (uploadID) ON DELETE CASCADE;
 
 ALTER TABLE wcf1_user ADD FOREIGN KEY (avatarID) REFERENCES wcf1_user_avatar (avatarID) ON DELETE SET NULL;
 ALTER TABLE wcf1_user ADD FOREIGN KEY (rankID) REFERENCES wcf1_user_rank (rankID) ON DELETE SET NULL;
